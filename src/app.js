@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser'
 import userRoute from './routes/user.routes.js'
 import deviceRoute from './routes/device.routes.js'
-import authRoute from './routes/autentication.routes.js'
+import authRoute from './routes/authentication.routes.js'
 
 import cors from 'cors';
 
