@@ -4,23 +4,30 @@ import * as userCtrl from '../controller/user.controller.js'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export const login = async  (req, res) => {
+export const login = async (req, res) => {
     try {
         const findUser = await getUserById(req.body.dni)
         console.log('login')
         console.log(findUser)
-        if(!findUser){
-            return res.json({success:false,msg:'Credenciales incorrectas'})
+        if (!findUser) {
+            return res.json({ success: false, msg: 'Credenciales incorrectas' })
         }
         // console.log('email: ',findUser.data.password)
-        const equalPw = bcrypt.compareSync(req.body.password,findUser.data.password)
+        const equalPw = bcrypt.compareSync(req.body.password, findUser.data.password)
         console.log('equalPw : ', equalPw)
-        if (!equalPw) return res.json({success:false,msg:'Credenciales incorrectas'})
-        
-            
-        return res.json({success:true,msg:'Login exitoso', token:createToken(findUser)})
+        if (!equalPw) return res.json({ success: false, msg: 'Credenciales incorrectas' })
+
+        return res.json({
+            success: true,
+            msg: 'Login exitoso',
+            user: findUser.data.name + ' ' +findUser.data.lastname,
+            email: findUser.data.email,
+            enable: findUser.data.enable,
+            role: findUser.data.role,
+            token: createToken(findUser),
+        })
     } catch (error) {
-        console.log('error: ',error)
+        console.log('error: ', error)
     }
 
 }
@@ -61,12 +68,12 @@ export const register = async (req, res) => {
 
 }
 
-function createToken(user){
+function createToken(user) {
     const payload = {
         usuario: user.name,
-        // role: user.role,
+        role: user.role,
         id: user.dni
     }
-    return jwt.sign(payload,'PROYECTO RURAL 2024 JOSUE ROMERO')
+    return jwt.sign(payload, 'PROYECTO RURAL 2024 JOSUE ROMERO')
 }
 // export const register = () => {}
