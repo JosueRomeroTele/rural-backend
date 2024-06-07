@@ -2,11 +2,21 @@ import { docClient, tableUser } from "../config/db.config.js";
 
 
 const readAllUsers = async () => {
-    const params = { TableName: tableUser }
+    const params = { 
+        TableName: tableUser,
+        // ProjectionExpression:'#lastname,#',
+        // ExpressionAttributeNames:{
+        //     '#password':'password'
+        // }
+
+     }
     try {
         const { Items = [] } = await docClient.scan(params).promise();
-        // console.log('Éxito al escanear la tabla de usuarios:', Items);
-        return { success: true, data: Items };
+        const filteredItems = Items.map(item => {
+            const { password,token, ...rest } = item;
+            return rest;
+        })
+        return { success: true, data: filteredItems };
     } catch (error) {
         // console.error('Error al escanear la tabla de usuarios:', error);
         console.log('error', error)
@@ -46,9 +56,9 @@ const getUserById = async (data) => {
         const isItemFilled = Object.keys(Item).length > 0;
         // console.log('cantidad',isItemFilled)
         if (isItemFilled) {
-            return { success: true, msg:'Dni ya se encuentra registrado',data: Item }
+            return { success: true, msg: 'Dni ya se encuentra registrado', data: Item }
         }
-        return { success: false, msg: 'usuario no existe',data:null }
+        return { success: false, msg: 'usuario no existe', data: null }
 
     } catch (error) {
         console.log('error', error)

@@ -4,6 +4,8 @@ const router = Router();
 
 router.get('/list',userCtrl.listaUsuarios);
 router.post('/',userCtrl.crearUsuario);
+router.post('/enable',userCtrl.habilitarUsuario)
 router.get('/:dni',userCtrl.obtenerUsuario);
 router.delete('/:dni',userCtrl.eliminarUsuario);
+
 export default router;

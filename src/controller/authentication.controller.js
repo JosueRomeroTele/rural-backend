@@ -9,27 +9,34 @@ export const login = async (req, res) => {
         const findUser = await getUserById(req.body.dni)
         console.log('login')
         console.log(findUser)
-        if (!findUser) {
+        if (!findUser.success) {
             return res.json({ success: false, msg: 'Credenciales incorrectas' })
         }
         // console.log('email: ',findUser.data.password)
         const equalPw = bcrypt.compareSync(req.body.password, findUser.data.password)
         console.log('equalPw : ', equalPw)
         if (!equalPw) return res.json({ success: false, msg: 'Credenciales incorrectas' })
+        if (!findUser.data.enable) return res.json({ success: false, msg: 'Usuario no habilitado' })
+       findUser['data']['token'] = createToken(findUser)
+        await createUpdateUser(findUser.data)
+
+        console.log('update token user :', findUser)
 
         return res.json({
             success: true,
             msg: 'Login exitoso',
-            user: findUser.data.name + ' ' +findUser.data.lastname,
-            email: findUser.data.email,
-            enable: findUser.data.enable,
-            role: findUser.data.role,
-            token: createToken(findUser),
+            data: {
+                user: findUser.data.name + ' ' + findUser.data.lastname,
+                email: findUser.data.email,
+                enable: findUser.data.enable,
+                role: findUser.data.role,
+                token: createToken(findUser)
+            }
+
         })
     } catch (error) {
         console.log('error: ', error)
     }
-
 }
 
 
@@ -75,5 +82,10 @@ function createToken(user) {
         id: user.dni
     }
     return jwt.sign(payload, 'PROYECTO RURAL 2024 JOSUE ROMERO')
+}
+
+
+function bodyUser(user) {
+
 }
 // export const register = () => {}
