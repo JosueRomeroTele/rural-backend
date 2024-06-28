@@ -1,4 +1,4 @@
-import { readAllDevices, createDevice, getDeviceById } from "../db/db.device.js"
+import { readAllDevices, createDevice, getDeviceById, createTableDevice } from "../db/db.device.js"
 
 
 
@@ -11,39 +11,31 @@ export const listaDispositivos = async (req, res) => {
     }
 }
 export const crearDispositivo = async (req, res) => {
-    console.log('body', req.body)
-    
-    //crear
 
+    //validar dispositivo existente
     const validar = await getDeviceById(req.body.data.id);
     if (validar.success) {
         return res.status(200).json({ success: false, data: 'Dispositivo ya existente' })
     }
+    //fechas de creacion
     const now = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
     req.body.data.createdAt = now;
     req.body.data.updatedAt = now;
+    //crear item dispositivo
     const { success, data } = await createDevice(req.body.data);
-
-    crearTablaDispositivo(req.body.data)
-
-    return res.status(200).json({ success, data })
-    //cuando se crea un dispositivo, se debe crear la tabla para que vaya la data
-
-    //actualizar
-    if (req.body.tipo === 1) {
-        const validar = await getDeviceById(req.body.data.id);
-        if (validar.success) {
-            const now = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
-
-            req.body.data.createdAt = validar.data.createdAt
-            req.body.data.updatedAt = now;
-            const { success, data } = await createUpdateDevice(req.body.data);
-            return res.status(200).json({ success, data: 'Dispositivo actualizado exitosamente' })
+    if(success){
+        //crear tabla dispositivo
+        const dataDevice = await createTableDevice(req.body.data);
+        if(dataDevice.success){
+            return res.status(200).json({ success, data })
+        }else{
+            return res.status(400).json({success,msg:'No se creo la tabla para el dispositivo'})
         }
+    }else{
+        return res.status(400).json({success,msg:'No se crea el dispositivo'})
     }
-
-
 }
+
 export const obtenerDispositivo = async (req, res) => {
 
     try {
@@ -56,8 +48,4 @@ export const obtenerDispositivo = async (req, res) => {
 
 }
 
-const crearTablaDispositivo = (data) => {
-    console.log('data', data);
-
-}
 export const deleteDevice = () => { }
