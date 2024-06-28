@@ -18,7 +18,7 @@ export const readAllDevices = async () =>{
     }
 }
 
-export const createUpdateDevice = async (data={})=>{
+export const createDevice = async (data={})=>{
 
     try {
         const params = {TableName:tableDevice,Item:data}

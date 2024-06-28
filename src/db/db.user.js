@@ -44,6 +44,27 @@ const createUpdateUser = async (data = {}) => {
     }
 }
 
+const updateUser = async (dni,updateKey,updateValue)=>{
+    const params ={
+        TableName: tableUser,
+        Key:{
+            ['dni']:dni
+        },
+        UpdateExpression: `set ${updateKey} = :value`,
+        ExpressionAttributeValues: {
+            ':value': updateValue
+        },
+        ReturnValues: 'UPDATED_NEW'
+    }
+    try {
+        const result = await docClient.update(params).promise();
+        console.log('Item actualizado con éxito:', result);
+        return { success: true, msg: 'Actualizacion exitosa', data: result }
+    } catch (error) {
+        console.log('error : ',error)
+        // res.status(500).json({msg:'Error en el servidor'})
+    }
+}
 
 const getUserById = async (data) => {
     try {
@@ -67,7 +88,7 @@ const getUserById = async (data) => {
 }
 
 
-export const getUserByEmail = async (data) => {
+const getUserByEmail = async (data) => {
 
     try {
         const params = {
@@ -90,6 +111,7 @@ export const getUserByEmail = async (data) => {
 }
 
 
+
 const deleteUser = async (data) => {
     try {
         const params = {
@@ -108,5 +130,7 @@ export {
     readAllUsers,
     createUpdateUser,
     getUserById,
-    deleteUser
+    deleteUser,
+    getUserByEmail,
+    updateUser
 }

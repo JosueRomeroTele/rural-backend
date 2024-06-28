@@ -1,5 +1,5 @@
 
-import { readAllUsers, createUpdateUser, getUserById, deleteUser, getUserByEmail } from "../db/db.user.js"
+import { readAllUsers, createUpdateUser, getUserById, deleteUser, getUserByEmail,updateUser } from "../db/db.user.js"
 import { transporter, habilitarUsuarioEmail } from "../services/service-email.js";
 
 export const listaUsuarios = async (req, res) => {
@@ -79,6 +79,14 @@ export const eliminarUsuario = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'error' })
+    }
+}
+
+export const actualizarUsuarioId= async (req,res)=>{
+    try {
+        const updateUserI = updateUser()
+    } catch (error) {
+        console.log('error : ',error)
     }
 }
 // import {transporter,habilitarUsuarioEmail} from "../services/service-email.js";
