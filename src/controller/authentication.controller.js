@@ -14,7 +14,7 @@ export const login = async (req, res) => {
         }
         // console.log('email: ',findUser.data.password)
         const equalPw = bcrypt.compareSync(req.body.password, findUser.data.password)
-        console.log('equalPw : ', equalPw)
+        // console.log('equalPw : ', equalPw)
         if (!equalPw) return res.json({ success: false, msg: 'Credenciales incorrectas' })
         if (!findUser.data.enable) return res.json({ success: false, msg: 'Usuario no habilitado' })
        findUser['data']['token'] = createToken(findUser)
