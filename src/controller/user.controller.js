@@ -1,5 +1,5 @@
 
-import { readAllUsers, createUpdateUser, getUserById, deleteUser, getUserByEmail,updateUser } from "../db/db.user.js"
+import { readAllUsers, createUpdateUser, getUserById, deleteUser, getUserByEmail,updateUser,obtenerUsuarioPorDni } from "../db/db.user.js"
 import { transporter, habilitarUsuarioEmail } from "../services/service-email.js";
 
 export const listaUsuarios = async (req, res) => {
@@ -62,7 +62,7 @@ export const crearUsuario = async (req, res) => {
 export const obtenerUsuario = async (req, res) => {
     try {
         const { dni } = req.params
-        const { success, data } = await getUserById(dni);
+        const { success, data } = await obtenerUsuarioPorDni(dni);
 
         return res.status(200).json({ success, data })
     } catch (error) {

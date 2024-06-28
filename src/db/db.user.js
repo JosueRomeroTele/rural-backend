@@ -77,7 +77,30 @@ const getUserById = async (data) => {
         const isItemFilled = Object.keys(Item).length > 0;
         // console.log('cantidad',isItemFilled)
         if (isItemFilled) {
-            return { success: true, msg: 'Dni ya se encuentra registrado', data: Item }
+            const { password, token, ...userData } = Item;
+            return { success: true, msg: 'Usuario encontrado', data: Item }
+        }
+        return { success: false, msg: 'usuario no existe', data: null }
+
+    } catch (error) {
+        console.log('error', error)
+        return { success: false, data: null }
+    }
+}
+
+const obtenerUsuarioPorDni = async (data) => {
+    try {
+        const params = {
+            TableName: tableUser,
+            Key: { dni: data }
+        }
+
+        const { Item = {} } = await docClient.get(params).promise();
+        const isItemFilled = Object.keys(Item).length > 0;
+        // console.log('cantidad',isItemFilled)
+        if (isItemFilled) {
+            const { password, token, ...userData } = Item;
+            return { success: true, msg: 'Usuario encontrado', data: userData }
         }
         return { success: false, msg: 'usuario no existe', data: null }
 
@@ -132,5 +155,6 @@ export {
     getUserById,
     deleteUser,
     getUserByEmail,
-    updateUser
+    updateUser,
+    obtenerUsuarioPorDni
 }
