@@ -6,5 +6,6 @@ const router = Router();
 
 
 router.get('/:table',deviceItemCtrl.listItems)
+router.post('/device',deviceItemCtrl.listData)
 
 export default router;
